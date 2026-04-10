@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       await client.messages.create({
         body: 'New Shopify order received!',
         from: process.env.TWILIO_PHONE,
-        to: '3074318109'
+        to: '+13074318109'
       });
 
       return res.status(200).json({ success: true });
