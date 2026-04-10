@@ -1,10 +1,25 @@
+import twilio from 'twilio';
+
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    console.log('Order received:', req.body);
+    const client = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
 
-    return res.status(200).json({ success: true });
+    try {
+      await client.messages.create({
+        body: 'New Shopify order received!',
+        from: process.env.TWILIO_PHONE,
+        to: 'YOUR_PHONE_NUMBER'
+      });
+
+      return res.status(200).json({ success: true });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'SMS failed' });
+    }
   }
 
   return res.status(405).json({ message: 'Method not allowed' });
 }
-// trigger deploy
