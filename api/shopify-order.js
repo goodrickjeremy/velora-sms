@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       console.log('Incoming request:', req.body);
 
       const message = await client.messages.create({
-        body: 'New Shopify order received!',
+        body: 'Velora Biolabs: New Shopify order received. Reply STOP to opt out.',
         from: process.env.TWILIO_PHONE,
         to: '+13074318109' // MUST be +1 format
       });
