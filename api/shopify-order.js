@@ -1,21 +1,33 @@
 import twilio from 'twilio';
 
+const client = twilio(
+  process.env.TWILIO_SID,
+  process.env.TWILIO_AUTH
+);
+
 export default async function handler(req, res) {
-  const client = twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN
-  );
+  if (req.method === 'POST') {
+    try {
+      console.log('Incoming request:', req.body);
 
-  try {
-    await client.messages.create({
-      body: 'New Shopify order received!',
-      from: process.env.TWILIO_PHONE,
-      to: '+13074318109'
-    });
+      const message = await client.messages.create({
+        body: 'New Shopify order received!',
+        from: process.env.TWILIO_PHONE,
+        to: '+13074318109' // MUST be +1 format
+      });
 
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'SMS failed' });
+      console.log('Twilio response:', message);
+
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      console.error('Twilio ERROR:', err);
+
+      return res.status(500).json({
+        success: false,
+        error: err.message
+      });
+    }
   }
+
+  return res.status(405).json({ message: 'Method not allowed' });
 }
